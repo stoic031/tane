@@ -1,4 +1,5 @@
 import { type App, normalizePath, TFile } from 'obsidian';
+import { occurrenceAfter } from '../core/calc/recurring';
 import { rateOn } from '../core/fx';
 import { newId } from '../core/ids';
 import { roundTo } from '../core/money';
@@ -6,7 +7,7 @@ import type { Ymd } from '../core/period';
 import { type LinkField, propertyValue, toFrontmatter, transactionProperties } from '../core/serialize';
 import { currencyOf, type TaneSettings } from '../core/settings';
 import { newTransactionProblems } from '../core/snapshot';
-import { LOAN_TYPES, type Snapshot, type Transaction, type TxType } from '../core/types';
+import { LOAN_TYPES, type Recurring, type Snapshot, type Transaction, type TxType } from '../core/types';
 import { nowLocal } from './clock';
 import { linkTo } from './links';
 import { tanePaths, transactionPath } from './paths';
@@ -182,6 +183,12 @@ export class Writer {
 			}
 			if (stamp) front.updated = this.now();
 		});
+	}
+
+	/** Move a recurring item past `done` (paid, skipped or auto-logged); archive it past its end. */
+	advanceRecurring(rc: Recurring, done: Ymd): Promise<void> {
+		const next = occurrenceAfter(rc, done);
+		return this.setProperties(rc.path, { next, archived: rc.end !== undefined && next > rc.end ? true : undefined });
 	}
 
 	/** Confirm a captured transaction: it leaves the to-review box. */

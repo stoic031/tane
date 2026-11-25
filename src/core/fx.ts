@@ -59,3 +59,29 @@ export function convert(amount: number, from: string, to: string, date: Ymd, row
 	const b = rateOn(rows, base, to, date);
 	return a === undefined || b === undefined ? undefined : amount * a * b;
 }
+
+/**
+ * Rows from a currency-api response (`{ date, <base>: { <code>: rate } }`, D-013) for the configured
+ * currencies, skipping any pair that already has a row on that date (manual rows always win).
+ */
+export function fxRowsFromApi(json: unknown, base: string, codes: readonly string[], existing: readonly FxRow[]): FxRow[] {
+	if (!json || typeof json !== 'object') return [];
+	const obj = json as Record<string, unknown>;
+	const date = obj.date;
+	const table = obj[base.toLowerCase()];
+	if (typeof date !== 'string' || !table || typeof table !== 'object') return [];
+	try {
+		parseYmd(date);
+	} catch {
+		return [];
+	}
+	const have = new Set(existing.filter((r) => r.date === date).map((r) => r.pair));
+	const out: FxRow[] = [];
+	for (const code of codes) {
+		if (code === base) continue;
+		const rate = (table as Record<string, unknown>)[code.toLowerCase()];
+		const pair = base + code;
+		if (typeof rate === 'number' && rate > 0 && !have.has(pair)) out.push({ date, pair, rate, source: 'api' });
+	}
+	return out;
+}

@@ -1,6 +1,5 @@
 // What the add-transaction pickers offer and preselect (docs/ui.md § Add-transaction modal).
-import { WALLET_ACCEPTS } from './snapshot';
-import type { CategoryKind, Snapshot, TxType } from './types';
+import { type CategoryKind, type Snapshot, type TxType, WALLET_ACCEPTS } from './types';
 
 export interface Choice {
 	name: string;

@@ -1,19 +1,46 @@
 import { MarkdownRenderChild, type MarkdownPostProcessorContext } from 'obsidian';
-import { t } from './i18n';
 import type TanePlugin from '../main';
+import { t } from './i18n';
 import { todayLocal } from './time';
-import { renderPeriod } from './widgets/period';
+import { WIDGETS } from './widgets';
 
-/** ```tane <widget>``` blocks (docs/ui.md § Code blocks). M1: period only; the rest arrive in M4. */
+/** One ```tane <widget> [name]``` block; re-renders when the index publishes a new snapshot. */
+class TaneBlock extends MarkdownRenderChild {
+	constructor(
+		el: HTMLElement,
+		private readonly plugin: TanePlugin,
+		private readonly source: string,
+		private readonly sourcePath: string,
+	) {
+		super(el);
+	}
+
+	onload(): void {
+		this.render();
+		this.registerEvent(this.plugin.index.on('snapshot', () => this.render()));
+	}
+
+	render(): void {
+		const el = this.containerEl;
+		el.empty();
+		el.addClass('tane-block');
+		const [name = 'today', ...rest] = this.source.trim().split(/\s+/);
+		const widget = WIDGETS[name.toLowerCase()];
+		if (!widget) {
+			el.createDiv({ cls: 'tane-muted', text: t.unknownWidget(name) });
+			return;
+		}
+		try {
+			widget(el, { plugin: this.plugin, snap: this.plugin.index.snapshot, today: todayLocal(), sourcePath: this.sourcePath, arg: rest.join(' ') });
+		} catch (e) {
+			void this.plugin.log(`code block ${name}`, e);
+		}
+	}
+}
+
+/** ```tane <widget>``` blocks (docs/ui.md § Code blocks). */
 export function registerCodeBlocks(plugin: TanePlugin): void {
 	plugin.registerMarkdownCodeBlockProcessor('tane', (source: string, el: HTMLElement, ctx: MarkdownPostProcessorContext) => {
-		const name = source.trim().split(/\s+/)[0] || 'today';
-		const child = new MarkdownRenderChild(el);
-		ctx.addChild(child);
-		if (name === 'today' || name === 'period') {
-			renderPeriod(el, todayLocal(), plugin.settings.periodStartDay);
-		} else {
-			el.createDiv({ cls: 'tane-muted', text: t.unknownWidget(name) });
-		}
+		ctx.addChild(new TaneBlock(el, plugin, source, ctx.sourcePath));
 	});
 }

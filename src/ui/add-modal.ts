@@ -23,6 +23,8 @@ export class AddTransactionModal extends Modal {
 	constructor(
 		private readonly plugin: TanePlugin,
 		private readonly draft: Draft,
+		/** Runs after a successful save, e.g. to move a paid reminder to its next date. */
+		private readonly onSaved?: () => unknown,
 	) {
 		super(plugin.app);
 		const s = (n: number | undefined) => (n === undefined ? '' : String(n));
@@ -211,6 +213,7 @@ export class AddTransactionModal extends Modal {
 				return;
 			}
 			const cur = currencyOf(this.plugin.settings, this.snap.wallets[d.wallet]?.currency ?? '');
+			await this.onSaved?.();
 			new Notice(t.saved(formatMoney(d.amount, cur), d.category ?? d.toWallet ?? d.person ?? t.types[d.type]));
 			this.close();
 		} catch (e) {

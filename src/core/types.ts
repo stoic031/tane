@@ -8,6 +8,13 @@ export const LOAN_TYPES: readonly TxType[] = ['lend', 'collect', 'borrow', 'repa
 export const WALLET_KINDS = ['basic', 'credit', 'goal'] as const;
 export type WalletKind = (typeof WALLET_KINDS)[number];
 
+/** docs/data-model.md: which transaction types each wallet kind accepts. */
+export const WALLET_ACCEPTS: Record<WalletKind, readonly TxType[]> = {
+	basic: ['expense', 'income', 'transfer', 'adjust', 'lend', 'collect', 'borrow', 'repay'],
+	credit: ['expense', 'income', 'transfer', 'adjust'],
+	goal: ['income', 'transfer', 'adjust'],
+};
+
 export type CategoryKind = 'expense' | 'income';
 
 export interface Transaction {

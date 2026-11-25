@@ -1,18 +1,19 @@
 import { ItemView, type WorkspaceLeaf } from 'obsidian';
-import { t } from './i18n';
 import type TanePlugin from '../main';
+import { t } from './i18n';
 import { todayLocal } from './time';
-import { renderPeriod } from './widgets/period';
+import { PANEL } from './widgets';
+import type { WidgetCtx } from './widgets/kit';
 
 export const VIEW_TYPE_OVERVIEW = 'tane-overview';
 
-/** Overview panel in the right sidebar (docs/ui.md § Surfaces). M1: period card only. */
+/** Overview panel in the right sidebar (docs/ui.md § Surfaces). Re-rendered on every index snapshot. */
 export class OverviewView extends ItemView {
-	plugin: TanePlugin;
-
-	constructor(leaf: WorkspaceLeaf, plugin: TanePlugin) {
+	constructor(
+		leaf: WorkspaceLeaf,
+		private readonly plugin: TanePlugin,
+	) {
 		super(leaf);
-		this.plugin = plugin;
 	}
 
 	getViewType(): string {
@@ -35,6 +36,13 @@ export class OverviewView extends ItemView {
 		const el = this.contentEl;
 		el.empty();
 		el.addClass('tane-panel');
-		renderPeriod(el, todayLocal(), this.plugin.settings.periodStartDay);
+		const ctx: WidgetCtx = { plugin: this.plugin, snap: this.plugin.index.snapshot, today: todayLocal() };
+		for (const widget of PANEL) {
+			try {
+				widget(el, ctx);
+			} catch (e) {
+				void this.plugin.log(`panel widget ${widget.name}`, e);
+			}
+		}
 	}
 }

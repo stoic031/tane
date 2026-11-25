@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { convert, fxCsvLine, parseFxCsv, rateOn } from '../../src/core/fx';
+import { convert, fxCsvLine, fxRowsFromApi, parseFxCsv, rateOn } from '../../src/core/fx';
 
 const csv = `date,pair,rate,source
 2026-11-01,JPYVND,170,manual
@@ -66,5 +66,19 @@ describe('fxCsvLine', () => {
 	it('round-trips through parseFxCsv', () => {
 		const line = fxCsvLine({ date: '2026-11-26', pair: 'JPYVND', rate: 161.9, source: 'api' });
 		expect(parseFxCsv('date,pair,rate,source\n' + line).rows[0]).toEqual({ date: '2026-11-26', pair: 'JPYVND', rate: 161.9, source: 'api' });
+	});
+});
+
+describe('fxRowsFromApi', () => {
+	const json = { date: '2026-11-25', jpy: { vnd: 161.89873612, usd: 0.0064, eur: 0.006 } };
+
+	it('one api row per configured currency, skipping dates and pairs already present', () => {
+		const existing = [{ date: '2026-11-25', pair: 'JPYUSD', rate: 0.0065, source: 'manual' as const }];
+		expect(fxRowsFromApi(json, 'JPY', ['JPY', 'VND', 'USD'], existing)).toEqual([{ date: '2026-11-25', pair: 'JPYVND', rate: 161.89873612, source: 'api' }]);
+	});
+
+	it('bad payloads give no rows', () => {
+		expect(fxRowsFromApi({}, 'JPY', ['VND'], [])).toEqual([]);
+		expect(fxRowsFromApi({ date: 'x', jpy: { vnd: 1 } }, 'JPY', ['VND'], [])).toEqual([]);
 	});
 });

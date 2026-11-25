@@ -1,14 +1,11 @@
 // Parsed notes → one consistent Snapshot. Applies the rules of docs/data-model.md:
 // a note that fails parsing or a rule goes to `problems` and counts in no totals.
 import { parseCategory, parseInboxItem, parsePerson, parseRecurring, parseTransaction, parseWallet, type RawNote } from './parse';
-import type { Category, FxRow, Problem, Recurring, Snapshot, Transaction, TxType, Wallet, WalletKind } from './types';
+import { loansByPerson } from './calc/loans';
+import { inboxDraft } from './guess';
+import { type Category, type FxRow, type Problem, type Recurring, type Snapshot, type Transaction, type Wallet, WALLET_ACCEPTS } from './types';
 
-/** docs/data-model.md: which transaction types each wallet kind accepts. */
-export const WALLET_ACCEPTS: Record<WalletKind, readonly TxType[]> = {
-	basic: ['expense', 'income', 'transfer', 'adjust', 'lend', 'collect', 'borrow', 'repay'],
-	credit: ['expense', 'income', 'transfer', 'adjust'],
-	goal: ['income', 'transfer', 'adjust'],
-};
+export { WALLET_ACCEPTS };
 
 type TxFields = Pick<Transaction, 'wallet' | 'type' | 'date' | 'currency' | 'amount'> & Partial<Pick<Transaction, 'category' | 'toWallet' | 'person'>>;
 
@@ -143,7 +140,21 @@ export function buildSnapshot(notes: readonly RawNote[], fx: readonly FxRow[], e
 	}
 	transactions.sort((a, b) => (a.date === b.date ? (a.created ?? '').localeCompare(b.created ?? '') : a.date.localeCompare(b.date)));
 
-	const inbox = parsed('inbox', parseInboxItem).map((x) => x.value);
+	const snap: Snapshot = { transactions, wallets, categories, people, recurring, inbox: [], fx: [...fx], problems };
 
-	return { transactions, wallets, categories, people, recurring, inbox, fx: [...fx], problems };
+	// Inbox notes Tane cannot turn into a transaction stay in place and are listed (docs/data-model.md § Inbox note).
+	for (const item of parsed('inbox', parseInboxItem).map((x) => x.value)) {
+		const d = inboxDraft(snap, item, '');
+		if (d.ok) snap.inbox.push(item);
+		else fail(item.path, d.problems);
+	}
+
+	// Over-repaid loans (negative balance) need a look (docs/calculations.md § Loans by person).
+	for (const l of loansByPerson(transactions, fx, '')) {
+		if (l.theyOwe < 0 || l.iOwe < 0) {
+			fail(people[l.person]?.path ?? l.person, [`Loans with ${l.person} in ${l.currency} are over-repaid; check the lend/collect or borrow/repay notes`]);
+		}
+	}
+
+	return snap;
 }

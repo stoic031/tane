@@ -2,11 +2,22 @@
  * Tane styles. Obsidian CSS variables only; every selector starts with .tane-
  */
 
+.tane-panel,
+.tane-block {
+	--tane-accent: var(--color-indigo, var(--interactive-accent));
+	font-variant-numeric: tabular-nums;
+}
+
 .tane-card {
 	background: var(--background-secondary);
 	border-radius: var(--radius-l);
-	padding: var(--size-4-4);
+	padding: var(--size-4-3) var(--size-4-4);
 	margin: var(--size-4-2) 0;
+}
+
+.tane-card-title {
+	font-weight: var(--font-semibold);
+	margin-bottom: var(--size-2-2);
 }
 
 .tane-card-label {
@@ -14,16 +25,11 @@
 	font-size: var(--font-ui-small);
 }
 
-.tane-card-value {
-	color: var(--text-normal);
-	font-size: var(--font-ui-large);
-	font-weight: var(--font-semibold);
-	font-variant-numeric: tabular-nums;
-}
-
-.tane-card-note {
-	color: var(--text-faint);
-	font-size: var(--font-ui-smaller);
+.tane-big {
+	font-size: 2em;
+	font-weight: var(--font-bold);
+	letter-spacing: -0.022em;
+	line-height: 1.2;
 }
 
 .tane-muted {
@@ -31,7 +37,205 @@
 	font-size: var(--font-ui-small);
 }
 
+.tane-row {
+	display: flex;
+	justify-content: space-between;
+	gap: var(--size-4-2);
+	padding: var(--size-2-1) 0;
+}
+
+.tane-row-label {
+	color: var(--text-muted);
+	min-width: 0;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.tane-row-value {
+	white-space: nowrap;
+	letter-spacing: -0.016em;
+}
+
+.tane-row.is-out .tane-row-value,
+.tane-tx-amount.is-out {
+	color: var(--text-error);
+}
+
+.tane-row.is-in .tane-row-value,
+.tane-tx-amount.is-in {
+	color: var(--text-success);
+}
+
+.tane-link {
+	cursor: pointer;
+}
+
+/* Stitched progress bar: Tane's signature (docs/ui.md § Identity). */
+.tane-bar {
+	position: relative;
+	height: 8px;
+	border-radius: 4px;
+	background: var(--background-modifier-border);
+	margin: var(--size-2-1) 0 var(--size-2-3);
+	overflow: hidden;
+}
+
+.tane-bar-fill {
+	width: var(--tane-progress, 0%);
+	height: 100%;
+	border-radius: 4px;
+	background: var(--tane-accent, var(--interactive-accent));
+	background-image: repeating-linear-gradient(90deg, transparent 0 6px, rgba(255, 255, 255, 0.35) 6px 8px);
+}
+
+.tane-bar.is-warning .tane-bar-fill {
+	background-color: var(--color-orange);
+}
+
+.tane-bar.is-over .tane-bar-fill {
+	background-color: var(--color-red);
+}
+
+.tane-bar-marker {
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	left: var(--tane-marker, 0%);
+	width: 2px;
+	background: var(--text-normal);
+	opacity: 0.6;
+}
+
+.tane-budget + .tane-budget {
+	border-top: 1px solid var(--background-modifier-border);
+	padding-top: var(--size-2-2);
+}
+
+.tane-tx {
+	display: flex;
+	align-items: center;
+	gap: var(--size-4-2);
+	padding: var(--size-2-2) 0;
+	min-height: 44px;
+	cursor: pointer;
+	flex-wrap: wrap;
+}
+
+.tane-tx + .tane-tx {
+	border-top: 1px solid var(--background-modifier-border);
+}
+
+.tane-tx-main {
+	flex: 1;
+	min-width: 0;
+}
+
+.tane-tx-what {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.tane-tx-sub {
+	color: var(--text-faint);
+	font-size: var(--font-ui-smaller);
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.tane-tx-amount {
+	white-space: nowrap;
+	letter-spacing: -0.016em;
+}
+
+.tane-actions {
+	display: flex;
+	gap: var(--size-2-2);
+	justify-content: flex-end;
+	margin: var(--size-2-1) 0 var(--size-2-3);
+	flex-basis: 100%;
+}
+
+.tane-actions button,
+.tane-add-button {
+	min-height: 36px;
+}
+
+.tane-add-button {
+	margin-top: var(--size-4-2);
+	width: 100%;
+}
+
+.tane-problems {
+	margin-top: var(--size-4-3);
+}
+
+.tane-problem {
+	padding: var(--size-2-2) 0;
+	border-top: 1px solid var(--background-modifier-border);
+}
+
+.tane-chart {
+	display: flex;
+	align-items: flex-end;
+	gap: var(--size-2-3);
+	height: 96px;
+	margin-bottom: var(--size-2-3);
+}
+
+.tane-chart-col {
+	flex: 1;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	height: 100%;
+}
+
+.tane-chart-bars {
+	flex: 1;
+	width: 100%;
+	display: flex;
+	align-items: flex-end;
+	justify-content: center;
+	gap: 2px;
+}
+
+.tane-chart-in,
+.tane-chart-out {
+	width: 40%;
+	height: var(--tane-h, 0%);
+	border-radius: 2px 2px 0 0;
+}
+
+.tane-chart-in {
+	background: var(--color-green);
+}
+
+.tane-chart-out {
+	background: var(--tane-accent, var(--interactive-accent));
+}
+
+.tane-chart-label {
+	color: var(--text-faint);
+	font-size: var(--font-ui-smaller);
+}
+
+.tane-day-head {
+	font-weight: var(--font-semibold);
+}
+
+.tane-error {
+	color: var(--text-error);
+	font-size: var(--font-ui-small);
+}
+
+.tane-error:empty {
+	display: none;
+}
+
 .tane-add .tane-add-types .setting-item-control {
+	flex-wrap: wrap;
 	justify-content: stretch;
 }
 
@@ -46,11 +250,14 @@
 	text-align: right;
 }
 
-.tane-error {
-	color: var(--text-error);
-	font-size: var(--font-ui-small);
-}
+@media (prefers-contrast: more) {
+	.tane-card {
+		border: 1px solid var(--background-modifier-border);
+	}
 
-.tane-error:empty {
-	display: none;
+	.tane-muted,
+	.tane-row-label,
+	.tane-tx-sub {
+		color: var(--text-normal);
+	}
 }
