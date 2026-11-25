@@ -29,7 +29,7 @@ Not an MVP: version 1 replaces the owner's current finance app for daily use.
 ### Automatic capture
 - iOS Shortcuts drop a file into `inbox/` when a card is tapped in Wallet or a payment notification arrives (PayPay, card apps). Tane turns it into a transaction marked for review.
 - "To review" box: confirm or fix captured transactions in one pass.
-- `obsidian://tane/add?...` link opens the add-transaction modal pre-filled (amount, merchant, wallet).
+- `obsidian://tane?...` link opens the add-transaction modal pre-filled (amount, merchant, wallet).
 
 ### Wallets and categories
 - Wallet kinds: basic (cash, bank, e-money), credit card (statement day, due day, paying wallet, limit), goal (target amount and date).
@@ -79,7 +79,7 @@ Bank connections, reading email, investments, gamification.
 | Milestone | Content | Done when |
 | --- | --- | --- |
 | M0 | Starter: Nix, Svelte build, lint, tests, context files, skills | `npm run check` passes (done) |
-| M1 | Native surfaces spike: add-transaction modal (no save yet), pickers over fake lists, empty overview panel, `tane` code block stub, status bar item, `obsidian://tane/add`, Svelte removed | Owner logs a fake expense on the iPhone from the mobile toolbar and from a Shortcut, and signs off |
+| M1 | Native surfaces spike: add-transaction modal (no save yet), pickers over fake lists, empty overview panel, `tane` code block stub, status bar item, `obsidian://tane`, Svelte removed | Owner logs a fake expense on the iPhone from the mobile toolbar and from a Shortcut, and signs off |
 | M2 | Data layer: types, parse, validate, vault index from `metadataCache`, writer, needs-review list, logger, fake vault generator | A generated vault loads, edits round-trip, broken files show in needs-review |
 | M3 | Core calculations: every formula in `docs/calculations.md` with tests | All formulas implemented and tested |
 | M4 | Surfaces for real: modal saves through the writer, overview panel, code blocks, ledger Bases view, generated `.base` files, settings | Owner can log and review a normal week on the phone |

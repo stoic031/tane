@@ -21,7 +21,7 @@ A transaction, wallet, category or person is opened and edited as its note, with
 
 - Command "Add transaction" (command palette; the user can pin it to the mobile toolbar).
 - Ribbon icon.
-- `obsidian://tane/add?amount=1280&merchant=Lawson&wallet=PayPay` (iOS Shortcuts, widgets, Back Tap). Every parameter is optional and pre-fills the form.
+- `obsidian://tane?amount=1280&merchant=Lawson&wallet=PayPay` (iOS Shortcuts, widgets, Back Tap). Every parameter is optional and pre-fills the form.
 - A button inside the overview panel and the `today` code block.
 
 ## Add-transaction modal

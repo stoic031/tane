@@ -25,3 +25,23 @@
 	color: var(--text-faint);
 	font-size: var(--font-ui-smaller);
 }
+
+.tane-muted {
+	color: var(--text-muted);
+	font-size: var(--font-ui-small);
+}
+
+.tane-add .tane-add-types .setting-item-control {
+	justify-content: stretch;
+}
+
+.tane-add .tane-add-types button {
+	flex: 1;
+	min-height: 44px;
+}
+
+.tane-add .tane-amount {
+	font-size: var(--font-ui-large);
+	font-variant-numeric: tabular-nums;
+	text-align: right;
+}

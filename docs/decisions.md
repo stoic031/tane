@@ -6,7 +6,7 @@ One line per decision, newest first. Claude Code: before work that touches an op
 
 | Id | Date | Decision | Why |
 | --- | --- | --- | --- |
-| D-019 | 2026-11-26 | Surfaces: add-transaction `Modal` with `SuggestModal` pickers; Bases with a Tane ledger view and generated `.base` files; right-sidebar overview panel; `tane` code blocks; desktop status bar; `obsidian://tane/add` | Each one is a standard Obsidian component; Q-01 and Q-02 no longer apply |
+| D-019 | 2026-11-26 | Surfaces: add-transaction `Modal` with `SuggestModal` pickers; Bases with a Tane ledger view and generated `.base` files; right-sidebar overview panel; `tane` code blocks; desktop status bar; `obsidian://tane` | Each one is a standard Obsidian component; Q-01 and Q-02 no longer apply |
 | D-018 | 2026-11-26 | Tane is a native Obsidian plugin, not an app inside Obsidian: no own tab bar, sheets or animation; no Svelte, Obsidian's API only (supersedes D-009) | After the M1 spike the owner wanted logging to feel like Obsidian |
 | D-017 | 2026-11-26 | Public repository `stoic031/tane`, MIT license (closes Q-05) | BRAT installs without a token; MIT is common for Obsidian plugins and fine for directory submission |
 | D-016 | 2026-11-26 | Loans settle in the loan's currency: a `collect` or `repay` in another currency is converted at the rate of its date; with several open loans, the oldest is reduced first | A loan given in JPY and paid back in VND must reach 0 |

@@ -1,7 +1,8 @@
 import { ItemView, type WorkspaceLeaf } from 'obsidian';
-import { daysLeftIncludingToday, periodOf } from '../core/period';
+import { en } from '../core/i18n/en';
 import type TanePlugin from '../main';
 import { todayLocal } from './time';
+import { renderPeriod } from './widgets/period';
 
 export const VIEW_TYPE_OVERVIEW = 'tane-overview';
 
@@ -19,7 +20,7 @@ export class OverviewView extends ItemView {
 	}
 
 	getDisplayText(): string {
-		return 'Tane';
+		return en.tane;
 	}
 
 	getIcon(): string {
@@ -34,14 +35,6 @@ export class OverviewView extends ItemView {
 		const el = this.contentEl;
 		el.empty();
 		el.addClass('tane-panel');
-		const today = todayLocal();
-		const period = periodOf(today, this.plugin.settings.periodStartDay);
-		const card = el.createDiv({ cls: 'tane-card' });
-		card.createDiv({ cls: 'tane-card-label', text: `Period ${period.key}` });
-		card.createDiv({ cls: 'tane-card-value', text: `${period.start} → ${period.end}` });
-		card.createDiv({
-			cls: 'tane-card-note',
-			text: `${daysLeftIncludingToday(period, today)} of ${period.days} days left`,
-		});
+		renderPeriod(el, todayLocal(), this.plugin.settings.periodStartDay);
 	}
 }
