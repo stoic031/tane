@@ -1,0 +1,28 @@
+# npm
+node_modules
+
+# Build output: shipped as GitHub release assets, never committed
+main.js
+*.map
+
+# Obsidian plugin settings when a vault points at this folder
+data.json
+
+# Nix / direnv
+result
+.direnv/
+.envrc.local
+
+# Claude Code personal files
+CLAUDE.local.md
+.claude/settings.local.json
+
+# Real finance data must never enter the repo
+*.xlsx
+private/
+
+# OS / editors
+.DS_Store
+.vscode
+.idea
+*.iml

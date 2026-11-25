@@ -1,0 +1,8 @@
+/*
+ * Global Tane styles. Component styles live in each .svelte file (scoped).
+ * Use Obsidian CSS variables only; prefix any global selector with .tane-
+ */
+
+.tane-root {
+	--tane-ease: cubic-bezier(0.32, 0.72, 0, 1);
+}

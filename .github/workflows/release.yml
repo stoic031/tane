@@ -1,0 +1,59 @@
+name: Release
+
+# Push a tag equal to manifest.json "version" (no leading "v"), e.g. 0.1.0.
+# This builds the plugin and publishes a GitHub release with main.js,
+# manifest.json and styles.css attached. BRAT on the iPhone installs from it.
+
+on:
+    push:
+        tags:
+            - '*'
+
+jobs:
+    release:
+        runs-on: ubuntu-latest
+        permissions:
+            contents: write
+            id-token: write
+            attestations: write
+        steps:
+            - uses: actions/checkout@v6
+
+            - uses: actions/setup-node@v6
+              with:
+                  node-version: 26
+                  cache: 'npm'
+
+            - name: Check, then build
+              run: |
+                  npm ci
+                  npm run check
+
+            - name: Tag must match manifest version
+              run: |
+                  tag="${GITHUB_REF#refs/tags/}"
+                  ver="$(node -p "require('./manifest.json').version")"
+                  if [ "$tag" != "$ver" ]; then
+                    echo "Tag $tag does not match manifest.json version $ver" >&2
+                    exit 1
+                  fi
+
+            # Provenance for the community directory scorecard. Not available on
+            # private repos on free plans, so it may fail there without blocking.
+            - name: Attest build provenance
+              continue-on-error: true
+              uses: actions/attest@v4
+              with:
+                  subject-path: |
+                      main.js
+                      styles.css
+
+            - name: Publish release
+              env:
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+              run: |
+                  tag="${GITHUB_REF#refs/tags/}"
+                  flags=""
+                  case "$tag" in *-*) flags="--prerelease" ;; esac
+                  gh release create "$tag" --title="$tag" --generate-notes $flags \
+                    main.js manifest.json styles.css

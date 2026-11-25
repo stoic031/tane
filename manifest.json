@@ -1,0 +1,9 @@
+{
+	"id": "tane",
+	"name": "Tane",
+	"version": "0.0.1",
+	"minAppVersion": "1.11.4",
+	"description": "Track spending, budgets and wallets with one note per transaction.",
+	"author": "Andy",
+	"isDesktopOnly": false
+}

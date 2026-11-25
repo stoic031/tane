@@ -1,0 +1,6 @@
+# Copy to .envrc.local (git-ignored), edit, then run: direnv allow
+#
+# TEST vault that receives every build (main.js, manifest.json, styles.css).
+# Use a separate vault with fake data. NEVER point this at your real finance vault.
+# An iCloud vault also syncs the plugin to your iPhone automatically.
+export TANE_VAULT="$HOME/Library/Mobile Documents/iCloud~md~obsidian/Documents/Tane Dev"

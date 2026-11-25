@@ -1,0 +1,84 @@
+{
+	"$schema": "https://json.schemastore.org/claude-code-settings.json",
+	"permissions": {
+		"allow": [
+			"Bash(npm run *)",
+			"Bash(npm test *)",
+			"Bash(npx vitest *)",
+			"Bash(npx tsc *)",
+			"Bash(npx eslint *)",
+			"Bash(node scripts/*)",
+			"Bash(git status *)",
+			"Bash(git diff *)",
+			"Bash(git log *)",
+			"Bash(git show *)",
+			"Bash(git add *)",
+			"Bash(git commit *)",
+			"Bash(git switch *)",
+			"Bash(git branch *)",
+			"Bash(git describe *)",
+			"Bash(gh run list *)",
+			"Bash(gh run view *)",
+			"Bash(gh run watch *)",
+			"Bash(gh release view *)",
+			"Bash(gh release list *)",
+			"Bash(gh auth status *)",
+			"WebFetch(domain:docs.obsidian.md)",
+			"WebFetch(domain:github.com)",
+			"WebFetch(domain:forum.obsidian.md)"
+		],
+		"ask": [
+			"Bash(git push *)",
+			"Bash(git tag *)",
+			"Bash(git reset *)",
+			"Bash(npm install *)",
+			"Bash(npm version *)",
+			"Bash(gh release create *)",
+			"Bash(gh repo *)",
+			"Bash(nix flake update *)"
+		],
+		"deny": [
+			"Bash(git push --force *)",
+			"Bash(git push -f *)",
+			"Bash(rm -rf *)",
+			"Bash(npm install -g *)",
+			"Bash(brew install *)",
+			"Read(./.envrc.local)",
+			"Read(./private/**)"
+		]
+	},
+	"hooks": {
+		"SessionStart": [
+			{
+				"hooks": [
+					{
+						"type": "command",
+						"command": "command -v direnv >/dev/null && direnv export bash > \"$CLAUDE_ENV_FILE\" 2>/dev/null || true"
+					}
+				]
+			}
+		],
+		"FileChanged": [
+			{
+				"matcher": ".envrc|flake.nix|flake.lock",
+				"hooks": [
+					{
+						"type": "command",
+						"command": "command -v direnv >/dev/null && direnv export bash > \"$CLAUDE_ENV_FILE\" 2>/dev/null || true"
+					}
+				]
+			}
+		],
+		"PreToolUse": [
+			{
+				"matcher": "Edit|Write",
+				"hooks": [
+					{
+						"type": "command",
+						"command": "\"$CLAUDE_PROJECT_DIR\"/.claude/hooks/protect-files.sh"
+					}
+				]
+			}
+		]
+	}
+}
