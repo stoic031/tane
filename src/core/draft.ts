@@ -18,6 +18,9 @@ export interface Draft {
 	date: Ymd;
 	merchant?: string;
 	note?: string;
+	/** Kept as they are when editing. */
+	tags?: string[];
+	group?: string;
 	/** Set when editing an existing transaction note. */
 	editPath?: string;
 	/** Set when paying a recurring reminder: deterministic id and the recurring link. */
@@ -85,6 +88,8 @@ export function draftFromTransaction(t: Transaction): Draft {
 		date: t.date,
 		merchant: t.merchant,
 		note: t.note,
+		tags: t.tags,
+		group: t.group,
 		editPath: t.path,
 		recurring: t.recurring,
 	};

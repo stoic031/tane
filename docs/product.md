@@ -80,8 +80,10 @@ Bank connections, reading email, investments, gamification.
 | --- | --- | --- |
 | M0 | Starter: Nix, Svelte build, lint, tests, context files, skills | `npm run check` passes (done) |
 | M1 | Native surfaces spike: add-transaction modal (no save yet), pickers over fake lists, empty overview panel, `tane` code block stub, status bar item, `obsidian://tane`, Svelte removed | Owner logs a fake expense on the iPhone from the mobile toolbar and from a Shortcut, and signs off |
-| M2 | Data layer: types, parse, validate, vault index from `metadataCache`, writer, needs-review list, logger, fake vault generator | A generated vault loads, edits round-trip, broken files show in needs-review |
-| M3 | Core calculations: every formula in `docs/calculations.md` with tests | All formulas implemented and tested |
-| M4 | Surfaces for real: modal saves through the writer, overview panel, code blocks, ledger Bases view, generated `.base` files, settings | Owner can log and review a normal week on the phone |
-| M5 | Capture: inbox processing, Shortcuts recipes, `obsidian://tane`, to-review box | Tapping a card in Wallet produces a transaction to review |
-| M6 | Recurring catch-up and reminders, exchange-rate fetch, CSV export, i18n, polish | Version 1.0 released through BRAT |
+| M2 ✓ | Data layer: types, parse, validate, vault index from `metadataCache`, writer, needs-review list, logger, fake vault generator | A generated vault loads, edits round-trip, broken files show in needs-review |
+| M3 ✓ | Core calculations: every formula in `docs/calculations.md` with tests | All formulas implemented and tested |
+| M4 ✓ | Surfaces for real: modal saves through the writer, overview panel, code blocks, ledger Bases view, generated `.base` files, settings | Owner can log and review a normal week on the phone |
+| M5 ✓ | Capture: inbox processing, Shortcuts recipes, `obsidian://tane`, to-review box | Tapping a card in Wallet produces a transaction to review |
+| M6 ✓ | Recurring catch-up and reminders, exchange-rate fetch, CSV export, i18n, polish | Version 1.0 released through BRAT |
+
+✓ = built and covered by tests (2026-11-26). Each milestone's "Done when" check on the iPhone, and the 1.0 release (`/release-brat`), are still the owner's.

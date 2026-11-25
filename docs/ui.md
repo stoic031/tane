@@ -54,7 +54,15 @@ today
 ```
 ````
 
-One widget per block, named on the first line: `today` (left to spend today), `period` (income, spending, balance, pace), `budgets`, `review` (to-review and needs-review), `upcoming` (recurring items), `cashflow` (6 months), `networth`, and on entity notes `wallet`, `category`, `person` (taken from the note the block is in). Unknown names render a short message, never an error. Blocks re-render when the vault index publishes a new snapshot.
+One widget per block, named on the first line: `today` (left to spend today), `period` (income, spending, balance, saved, savings rate), `budgets` (with pace marker), `review` (to-review with Confirm, needs-review list), `upcoming` (due-soon reminders with Pay / Skip, next 30 days), `spending` (by category), `cashflow` (6 periods), `wallets`, `loans`, `networth`, and on entity notes `wallet`, `category`, `person` (the note the block is in, or a name after the widget: ```` ```tane wallet PayPay ````). Unknown names render a short message, never an error. Blocks re-render when the vault index publishes a new snapshot.
+
+The overview panel shows, top to bottom: today, review, upcoming, period, budgets, spending, wallets, loans, net worth.
+
+## Commands
+
+Add transaction · Open Tane overview · Edit transaction (when a transaction note is open; saving it also clears `review`) · Export transactions to CSV (`<root>/exports/`) · Fetch exchange rates now · Recompute base amounts from the rate table (asks first) · Create missing bases.
+
+Known gap: the settings tab is in English only; everything else follows the language setting.
 
 ## Generated bases
 

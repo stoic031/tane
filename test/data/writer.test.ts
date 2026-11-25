@@ -75,6 +75,19 @@ describe('Writer.updateTransaction', () => {
 		expect(app.fm(u.path)).toMatchObject({ id, amount: 1300, created: '2026-11-24T12:32:05' });
 		expect(app.contents.has(r.path)).toBe(false);
 	});
+
+	it('editing through the modal draft keeps tags, group and the note body', async () => {
+		const { app, index, writer } = await setup();
+		const r = await writer.createTransaction({ type: 'expense', date: '2026-11-24', wallet: 'PayPay', amount: 1280, category: 'Eating out', tags: ['okinawa-2027'], group: 'G-keepme0001' }, 'Receipt photo here\n');
+		if (!r.ok) throw new Error('create failed');
+		const s = await index.rebuild();
+		const { draftFromTransaction } = await import('../../src/core/draft');
+		const d = draftFromTransaction(s.transactions[0]!);
+		const u = await writer.updateTransaction(r.path, { ...d, amount: 1500, wallet: d.wallet! });
+		if (!u.ok) throw new Error('update failed');
+		expect(app.fm(u.path)).toMatchObject({ amount: 1500, tags: ['okinawa-2027'], group: 'G-keepme0001' });
+		expect(app.contents.get(u.path)).toContain('Receipt photo here');
+	});
 });
 
 describe('Writer review and trash', () => {

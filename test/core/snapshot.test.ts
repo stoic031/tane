@@ -102,6 +102,14 @@ describe('buildSnapshot', () => {
 	});
 });
 
+describe('over-repaid loans', () => {
+	it('show on the person note', () => {
+		const s = buildSnapshot([...base, tx({ type: 'lend', wallet: L('Yucho'), amount: 100, person: L('Minh', 'people') }), tx({ type: 'collect', wallet: L('Yucho'), amount: 150, person: L('Minh', 'people') })], []);
+		expect(s.problems.map((p) => p.path)).toEqual(['Tane/people/Minh.md']);
+		expect(s.transactions).toHaveLength(2);
+	});
+});
+
 describe('newTransactionProblems', () => {
 	const s = buildSnapshot(base, []);
 

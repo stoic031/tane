@@ -22,34 +22,41 @@ src/
 ├─ main.ts               TanePlugin: onload, settings, registerView, commands, protocol handler
 ├─ settings.ts           TaneSettings, defaults, PluginSettingTab
 ├─ core/
-│  ├─ types.ts           Transaction, Wallet, Category, Person, Recurring, InboxItem, Settings
-│  ├─ ids.ts             newId, recurringOccurrenceId
+│  ├─ types.ts           Transaction, Wallet, Category, Person, Recurring, InboxItem, Snapshot, WALLET_ACCEPTS
+│  ├─ settings.ts        TaneSettings and defaults
+│  ├─ ids.ts             newId, recurringOccurrenceId, inboxTransactionId
 │  ├─ period.ts          pay-cycle periods, day arithmetic
-│  ├─ money.ts           minor-unit arithmetic, rounding, conversion
-│  ├─ fx.ts              rate lookup from rate rows
+│  ├─ money.ts           minor-unit arithmetic, rounding, formatting
+│  ├─ fx.ts              rate CSV, rate lookup, conversion, currency-api rows
 │  ├─ parse.ts           raw frontmatter → typed record or problems
-│  ├─ validate.ts        rules checked before writing
-│  ├─ recurring.ts       occurrence dates, due-soon, catch-up plan
-│  ├─ calc/              balance.ts, flow.ts, budget.ts, goal.ts, loans.ts, credit.ts, networth.ts
-│  ├─ guess.ts           wallet from card name, category from merchant history
-│  ├─ csv.ts             CSV export rows
+│  ├─ snapshot.ts        cross-note rules, duplicates, needs-review → Snapshot; rules checked before writing
+│  ├─ serialize.ts       record → frontmatter
+│  ├─ draft.ts           add-modal state, link parameters, required fields
+│  ├─ choices.ts         what pickers offer and preselect
+│  ├─ guess.ts           wallet from card name, category from merchant history, inbox → draft
+│  ├─ calc/              balance, flow, budget, goal, loans, credit, networth, recurring
+│  ├─ csv.ts             CSV export
+│  ├─ bases.ts           generated .base files
 │  └─ i18n/              strings: en.ts (source), vi.ts, ja.ts
 ├─ data/
 │  ├─ paths.ts           folder layout, transaction file paths
-│  ├─ index.ts           VaultIndex: load from metadataCache, keep in sync with vault events
+│  ├─ index.ts           VaultIndex: load from metadataCache, rebuild on vault events (debounced)
 │  ├─ links.ts           resolve and build wikilinks
-│  ├─ writer.ts          create, update (processFrontMatter), move, trash; validates first
-│  ├─ jobs/              inbox.ts, catchup.ts, fx.ts, integrity.ts
+│  ├─ writer.ts          create, update (processFrontMatter), move, trash, advance recurring; validates first
+│  ├─ jobs.ts            inbox, catch-up, fx fetch, stale base amounts
+│  ├─ clock.ts           todayLocal, nowLocal
 │  └─ log.ts             append errors to system/log.md
 └─ ui/
-   ├─ add-modal.ts       AddTransactionModal (Modal): the logging form
-   ├─ pickers.ts         WalletPicker, CategoryPicker, PersonPicker (SuggestModal)
+   ├─ add-modal.ts       AddTransactionModal (Modal): the logging form, also used to edit and to pay reminders
+   ├─ pickers.ts         ChoicePicker (FuzzySuggestModal) for wallets, categories, people
+   ├─ confirm.ts         yes/no modal
    ├─ panel.ts           OverviewView (ItemView, right sidebar)
    ├─ codeblock.ts       `tane` code block processor (MarkdownRenderChild per block)
-   ├─ widgets/           today, period, budgets, review, upcoming, cashflow, networth, wallet…: render into an element, shared by panel and code blocks
+   ├─ widgets/           kit (helpers), summary, actions (review, pay/skip), entity (wallet, category, person), index (registry)
    ├─ ledger-view.ts     Tane ledger Bases view (registerBasesView)
    ├─ statusbar.ts       left to spend today (desktop)
-   └─ time.ts            todayLocal(): the only place the UI reads the clock
+   ├─ i18n.ts            current strings (language setting)
+   └─ time.ts            the only place the UI reads the clock
 test/
 ├─ core/                 one test file per core module
 ├─ data/                 data-layer tests against test/mocks/obsidian.ts and a fake vault
@@ -85,10 +92,10 @@ Run on layout ready, then when relevant events fire. None run while Obsidian is 
 
 | Job | When | Does |
 | --- | --- | --- |
-| `inbox` | load; file created in `inbox/` | Turn inbox notes into `review: true` transactions, trash the inbox note |
-| `catchup` | load, once per day (`lastCatchUp`) | Log due `auto` recurring occurrences with deterministic ids; advance `next` |
-| `fx` | load, at most once per day, only if a provider is set | Fetch rates with `requestUrl`, append to `system/fx-rates.csv` |
-| `integrity` | after every load | Duplicate ids, broken links, rule violations → needs-review |
+| `processInbox` | load; any snapshot with inbox notes | Turn inbox notes into `review: true` transactions with deterministic ids, trash the inbox note |
+| `catchUp` | load, once per day (`lastCatchUp`) | Log due `auto` recurring occurrences with deterministic ids; advance `next` past what was written |
+| `fetchRates` | load, at most once per day, only if `fxProvider` is set; command | Fetch rates with `requestUrl`, append to `system/fx-rates.csv` |
+| integrity | every snapshot (`core/snapshot.ts`) | Duplicate ids, broken links, rule violations, unmatched inbox notes, over-repaid loans → needs-review |
 
 Jobs must be idempotent: running twice, or on two devices before sync settles, must not create duplicates (deterministic ids, check before create). Tane runs on the Mac and the iPhone at the same time (D-012), so this is the normal case, not an edge case: occurrence ids come from the recurring id and date, inbox ids from the inbox note's content, and an iCloud conflict copy of a recurring note is caught as a duplicate id.
 

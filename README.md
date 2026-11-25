@@ -22,9 +22,22 @@ Built with TypeScript and Obsidian's own API. Working with Claude Code: run `cla
 
 Install the BRAT plugin in Obsidian, choose **Add beta plugin**, and enter this repository. See `docs/release.md`.
 
+## What it does
+
+- **Log** with the "Add transaction" modal (ribbon, command, mobile toolbar, or `obsidian://tane?amount=1280&merchant=Lawson` from iOS Shortcuts): expenses, income, transfers between currencies with a fee, balance adjustments, loans to and from people.
+- **See** left to spend today, budgets with pace, period income and spending, upcoming bills, wallets, loans and net worth in the right-sidebar panel, or anywhere with a code block such as ` ```tane today ``` `.
+- **List** transactions with Bases: Tane creates `This period.base`, `By wallet.base` and `To review.base`, with its own "Tane ledger" view.
+- **Capture** card payments automatically with iOS Shortcuts (`docs/shortcuts.md`).
+- **Recurring** rent, salary and bills: logged automatically or reminded with Pay / Skip.
+- Vietnamese, English, Japanese.
+
+Data format: `docs/data-model.md`. Try it with the fake vault in `fixtures/vault-small`.
+
 ## Privacy and network use
 
-All data stays in your vault as Markdown files. Tane collects no telemetry. Network features, each optional and off by default, will be listed here before release: exchange rates (for example JPY/VND) from a public rate API; later, AI features with your own API key.
+All data stays in your vault as Markdown files. Tane collects no telemetry and sends nothing about your data anywhere.
+
+One optional network feature, off by default: **exchange rates**. When "Exchange rates online" is set to currency-api, Tane downloads the public daily rate table for your base currency once a day from `cdn.jsdelivr.net` (fallback `currency-api.pages.dev`), [fawazahmed0/exchange-api](https://github.com/fawazahmed0/exchange-api). No account, key or payment is needed, and the request contains only the base currency code. Later AI features will use your own API key and stay off by default.
 
 ## License
 

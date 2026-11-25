@@ -44,6 +44,8 @@ Automated: `npm run check` (typecheck, build, lint, tests, `scripts/check-forbid
 - `main.js` is build output and never committed.
 - Since 2026-05-12 Obsidian reviews submissions automatically and shows a scorecard; declare network and file access, and attach build provenance (artifact attestation is in `release.yml`).
 
-## Known warning
+## Known warnings
+
+`@typescript-eslint/no-deprecated` on `ButtonComponent.setWarning`: its replacement `setDestructive` needs Obsidian 1.13; keep `setWarning` until `minAppVersion` is raised.
 
 `obsidianmd/settings-tab/prefer-setting-definitions`: Obsidian 1.13 added declarative settings (`getSettingDefinitions()`) so settings appear in settings search. Tane's `minAppVersion` is 1.11.4, so it is not used yet; revisit when raising `minAppVersion`.
