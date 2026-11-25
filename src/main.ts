@@ -1,23 +1,23 @@
 import { Plugin, type WorkspaceLeaf } from 'obsidian';
 import { DEFAULT_SETTINGS, type TaneSettings, TaneSettingTab } from './settings';
-import { TaneView, VIEW_TYPE_TANE } from './ui/view';
+import { OverviewView, VIEW_TYPE_OVERVIEW } from './ui/panel';
 
-// Plugin lifecycle only. Layers: src/ui (Svelte) -> src/data (Obsidian I/O) -> src/core (pure logic).
+// Plugin lifecycle only. Layers: src/ui (Obsidian surfaces) -> src/data (Obsidian I/O) -> src/core (pure logic).
 export default class TanePlugin extends Plugin {
 	settings!: TaneSettings;
 
 	async onload(): Promise<void> {
 		await this.loadSettings();
 
-		this.registerView(VIEW_TYPE_TANE, (leaf) => new TaneView(leaf, this));
+		this.registerView(VIEW_TYPE_OVERVIEW, (leaf) => new OverviewView(leaf, this));
 
-		this.addRibbonIcon('wallet', 'Open Tane', () => {
+		this.addRibbonIcon('wallet', 'Open Tane overview', () => {
 			void this.activateView();
 		});
 
 		this.addCommand({
 			id: 'open',
-			name: 'Open',
+			name: 'Open overview',
 			callback: () => {
 				void this.activateView();
 			},
@@ -39,17 +39,18 @@ export default class TanePlugin extends Plugin {
 	}
 
 	refreshViews(): void {
-		for (const leaf of this.app.workspace.getLeavesOfType(VIEW_TYPE_TANE)) {
-			if (leaf.view instanceof TaneView) leaf.view.refresh();
+		for (const leaf of this.app.workspace.getLeavesOfType(VIEW_TYPE_OVERVIEW)) {
+			if (leaf.view instanceof OverviewView) leaf.view.render();
 		}
 	}
 
 	async activateView(): Promise<void> {
 		const { workspace } = this.app;
-		let leaf: WorkspaceLeaf | null = workspace.getLeavesOfType(VIEW_TYPE_TANE)[0] ?? null;
+		let leaf: WorkspaceLeaf | null = workspace.getLeavesOfType(VIEW_TYPE_OVERVIEW)[0] ?? null;
 		if (!leaf) {
-			leaf = workspace.getLeaf('tab');
-			await leaf.setViewState({ type: VIEW_TYPE_TANE, active: true });
+			leaf = workspace.getRightLeaf(false);
+			if (!leaf) return;
+			await leaf.setViewState({ type: VIEW_TYPE_OVERVIEW, active: true });
 		}
 		await workspace.revealLeaf(leaf);
 	}

@@ -1,14 +1,13 @@
 // Fails when src/ uses patterns that Obsidian's plugin review rejects or that
 // break Tane's layer rules (docs/architecture.md, docs/obsidian-rules.md).
-// Runs as part of `npm run check`. Checks .ts and .svelte files.
+// Runs as part of `npm run check`. Checks .ts files.
 import { readdirSync, readFileSync, statSync } from 'node:fs';
 import path from 'node:path';
 
 const ALL = [
-	{ re: /\.innerHTML\s*=|\.outerHTML\s*=|insertAdjacentHTML\s*\(/, why: 'Never build DOM from HTML strings (XSS). Use Svelte markup or createEl.' },
-	{ re: /\{@html\b/, why: 'No {@html} in Svelte: transaction text comes from user-editable files.' },
+	{ re: /\.innerHTML\s*=|\.outerHTML\s*=|insertAdjacentHTML\s*\(/, why: 'Never build DOM from HTML strings (XSS). Use createEl / setText.' },
 	// Fixed inline styles are rejected by review. Computed values (a drag offset) are fine:
-	// el.style.transform = `translateY(${y}px)` or style:transform={...} in Svelte.
+	// el.style.setProperty('--tane-progress', `${pct}%`).
 	{ re: /\.style\.[a-zA-Z]+\s*=\s*(['"][^'"]+['"]|`[^`$]+`)|\.style\.cssText\s*=|\.setAttribute\(\s*['"]style['"]/, why: 'No fixed inline styles from JS. Put them in a <style> block or styles.css.' },
 	{ re: /\sstyle="[^"{]*"/, why: 'No fixed style="..." attributes in markup. Use a class.' },
 	{ re: /\bfetch\s*\(|axios/, why: 'Use requestUrl from obsidian, not fetch/axios (mobile and CORS).' },
@@ -21,7 +20,6 @@ const ALL = [
 // src/core must stay pure so it is trivially testable.
 const CORE = [
 	{ re: /from\s+['"]obsidian['"]/, why: 'src/core must not import obsidian.' },
-	{ re: /from\s+['"]svelte/, why: 'src/core must not import svelte.' },
 	{ re: /\bnew Date\(\s*\)|Date\.now\(\)/, why: 'src/core must not read the clock. Take today as a YYYY-MM-DD string.' },
 ];
 
@@ -34,7 +32,7 @@ function walk(dir) {
 	return readdirSync(dir).flatMap((name) => {
 		const p = path.join(dir, name);
 		if (statSync(p).isDirectory()) return walk(p);
-		return p.endsWith('.ts') || p.endsWith('.svelte') ? [p] : [];
+		return p.endsWith('.ts') ? [p] : [];
 	});
 }
 

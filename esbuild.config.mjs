@@ -1,6 +1,4 @@
 import esbuild from 'esbuild';
-import esbuildSvelte from 'esbuild-svelte';
-import { sveltePreprocess } from 'svelte-preprocess';
 import process from 'process';
 import { builtinModules } from 'node:module';
 import { copyFile, mkdir } from 'node:fs/promises';
@@ -66,11 +64,6 @@ const context = await esbuild.context({
 	outfile: 'main.js',
 	minify: prod,
 	plugins: [
-		esbuildSvelte({
-			// As in Obsidian's guide "Use Svelte in your plugin": component styles are injected at runtime.
-			compilerOptions: { css: 'injected' },
-			preprocess: sveltePreprocess(),
-		}),
 		copyToVault,
 	],
 });

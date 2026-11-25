@@ -1,8 +1,27 @@
 /*
- * Global Tane styles. Component styles live in each .svelte file (scoped).
- * Use Obsidian CSS variables only; prefix any global selector with .tane-
+ * Tane styles. Obsidian CSS variables only; every selector starts with .tane-
  */
 
-.tane-root {
-	--tane-ease: cubic-bezier(0.32, 0.72, 0, 1);
+.tane-card {
+	background: var(--background-secondary);
+	border-radius: var(--radius-l);
+	padding: var(--size-4-4);
+	margin: var(--size-4-2) 0;
+}
+
+.tane-card-label {
+	color: var(--text-muted);
+	font-size: var(--font-ui-small);
+}
+
+.tane-card-value {
+	color: var(--text-normal);
+	font-size: var(--font-ui-large);
+	font-weight: var(--font-semibold);
+	font-variant-numeric: tabular-nums;
+}
+
+.tane-card-note {
+	color: var(--text-faint);
+	font-size: var(--font-ui-smaller);
 }
