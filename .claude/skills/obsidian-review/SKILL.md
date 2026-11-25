@@ -24,8 +24,8 @@ Read `git diff` (or all of `src/` before a release). Check each item:
 - [ ] API keys in SecretStorage.
 
 **Layers** (`docs/architecture.md`)
-- [ ] `src/core` imports neither `obsidian` nor `svelte` and does not read the clock.
-- [ ] Svelte components do not write to the vault.
+- [ ] `src/core` does not import `obsidian` and does not read the clock.
+- [ ] UI surfaces do not write to the vault.
 
 **Data** (`docs/data-model.md`)
 - [ ] Writes go through `data/writer.ts`, which validates first; nothing half-written on failure.

@@ -8,7 +8,7 @@ Automated: `npm run check` (typecheck, build, lint, tests, `scripts/check-forbid
 
 - Obfuscate code; client-side telemetry; ads loaded from the network.
 - Update the plugin or its dependencies outside the normal release.
-- Build DOM from HTML strings: `innerHTML`, `outerHTML`, `insertAdjacentHTML`, Svelte `{@html}`.
+- Build DOM from HTML strings: `innerHTML`, `outerHTML`, `insertAdjacentHTML`.
 - Assign fixed styles from code or inline `style="..."`; override Obsidian's core styles.
 - Node or Electron modules (`fs`, `path`, `electron`…): the plugin must run on iPhone (`isDesktopOnly: false`).
 - `fetch` or `axios`: use `requestUrl`.
@@ -31,10 +31,11 @@ Automated: `npm run check` (typecheck, build, lint, tests, `scripts/check-forbid
 - Store secrets with SecretStorage (`app.secretStorage`, Obsidian 1.11.4+), never in `data.json`.
 - Keep `manifest.json` correct: `id` never changes after release; `minAppVersion` matches the APIs used (currently 1.11.4).
 
-## Svelte specifics
+## Bases views
 
-- Follow Obsidian's guide "Use Svelte in your plugin": `esbuild-svelte` with `css: 'injected'`, `mount` in `onOpen`, `unmount` in `onClose`.
-- The compiled Svelte runtime itself contains an `innerHTML` call for static templates. That is the framework, not plugin code; plugin code must still never render user text as HTML.
+- Register with `this.registerBasesView` (Obsidian 1.10+); it returns `false` when the Bases core plugin is off, so show a hint instead of failing.
+- A Bases view only renders the rows the query gives it; it never writes files. Edits go through `src/data` like everywhere else.
+- Generated `.base` files are created once and never overwritten: they belong to the user.
 
 ## Releases
 

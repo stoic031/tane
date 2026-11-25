@@ -25,7 +25,7 @@ Source of truth: `docs/calculations.md`. Folder rules: `.claude/rules/core.md`.
 export function walletBalance(wallet: Wallet, txs: readonly Transaction[], until: Ymd): number
 ```
 
-- One function per figure; screens combine several. The UI store calls them on the current snapshot.
+- One function per figure; widgets combine several and call them on the current index snapshot.
 - Add money as integers in minor units (`src/core/money.ts`). JPY and VND have 0 decimals.
 - Period income and spending use `amount_base`; wallet balances use `amount` and `to_amount` in the wallet's own currency.
 - Transfers are never income or spending; a transfer fee is its own `expense` (category from the `feeCategory` setting, same `group` as the transfer), so it counts as spending.

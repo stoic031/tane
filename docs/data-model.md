@@ -27,6 +27,9 @@ Every record is a Markdown note; its data lives in properties (YAML frontmatter)
 ├─ people/                        Minh.md
 ├─ recurring/                     Rent.md
 ├─ inbox/                         notes written by iOS Shortcuts, consumed by the plugin
+├─ This period.base               generated once, then owned by the user (docs/ui.md § Generated bases)
+├─ By wallet.base
+├─ To review.base
 └─ system/
    ├─ fx-rates.csv                exchange-rate history
    └─ log.md                      plugin error log (for debugging on iPhone)
@@ -223,7 +226,7 @@ Columns `date,pair,rate,source`. `pair` like `JPYVND` means VND per 1 JPY. `sour
 | `totalBudget` | none | Overall budget per period, base currency |
 | `budgetWarnPct` | 80 | Warning threshold |
 | `defaultRemindDays` | 3 | For recurring items without `remind_days` |
-| `defaultWallet` | none | Path of the wallet preselected in the entry sheet |
+| `defaultWallet` | none | Wallet preselected in the add-transaction modal when there is no last entry |
 | `feeCategory` | none | Path of the category used for transfer fees |
 | `language` | `auto` | `auto`, `vi`, `en`, `ja` |
 | `openOnStartup` | false | Open the Tane tab when Obsidian starts |

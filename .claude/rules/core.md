@@ -7,7 +7,7 @@ paths:
 
 `src/core/` is pure TypeScript so it can be tested without Obsidian and reused later (for example by an import script or an AI feature).
 
-- Do not import `obsidian` or `svelte`; no DOM, no browser-only or Node-only APIs.
+- Do not import `obsidian`; no DOM, no browser-only or Node-only APIs.
 - Do not read the clock (`new Date()`, `Date.now()`): take `today: string` (`YYYY-MM-DD`) or a timestamp as an argument.
 - No randomness outside `ids.ts`; `newId` takes a byte source when a test needs one.
 - Pure functions: same input, same output; never mutate arguments.

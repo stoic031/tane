@@ -16,7 +16,7 @@ npm run check                   # build + lint + test
 
 The repository sits inside a test vault's `.obsidian/plugins/tane/`, so builds load there directly (use the `hot-reload` plugin). Optional: copy `.envrc.local.example` to `.envrc.local`, point `TANE_VAULT` at a **test** vault, run `direnv allow`, then `npm run dev`. Each build is copied into that vault's `.obsidian/plugins/tane/`.
 
-Built with TypeScript and Svelte 5. Working with Claude Code: run `claude` in this folder. Project instructions are in `CLAUDE.md`, docs in `docs/`, workflows in `.claude/skills/`.
+Built with TypeScript and Obsidian's own API. Working with Claude Code: run `claude` in this folder. Project instructions are in `CLAUDE.md`, docs in `docs/`, workflows in `.claude/skills/`.
 
 ## Install on iPhone (beta)
 

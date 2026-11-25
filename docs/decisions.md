@@ -6,6 +6,8 @@ One line per decision, newest first. Claude Code: before work that touches an op
 
 | Id | Date | Decision | Why |
 | --- | --- | --- | --- |
+| D-019 | 2026-11-26 | Surfaces: add-transaction `Modal` with `SuggestModal` pickers; Bases with a Tane ledger view and generated `.base` files; right-sidebar overview panel; `tane` code blocks; desktop status bar; `obsidian://tane/add` | Each one is a standard Obsidian component; Q-01 and Q-02 no longer apply |
+| D-018 | 2026-11-26 | Tane is a native Obsidian plugin, not an app inside Obsidian: no own tab bar, sheets or animation; no Svelte, Obsidian's API only (supersedes D-009) | After the M1 spike the owner wanted logging to feel like Obsidian |
 | D-017 | 2026-11-26 | Public repository `stoic031/tane`, MIT license (closes Q-05) | BRAT installs without a token; MIT is common for Obsidian plugins and fine for directory submission |
 | D-016 | 2026-11-26 | Loans settle in the loan's currency: a `collect` or `repay` in another currency is converted at the rate of its date; with several open loans, the oldest is reduced first | A loan given in JPY and paid back in VND must reach 0 |
 | D-015 | 2026-11-26 | "Left to spend today" is fixed at the start of the day and drops only by what is spent today | A number that re-divides after each purchase is confusing |
@@ -14,7 +16,7 @@ One line per decision, newest first. Claude Code: before work that touches an op
 | D-012 | 2026-11-26 | The real vault syncs with iCloud, and Tane runs on Mac and iPhone at the same time (closes Q-03) | Every job must be safe when two devices run it before sync settles |
 | D-011 | 2026-11-26 | The source lives in `plugin-test/.obsidian/plugins/tane`; `plugin-test` is the Mac dev vault (hot-reload). `TANE_VAULT` only copies builds to the iCloud "Tane Dev" vault for the iPhone | Owner's choice: build and try on the Mac in one place |
 | D-010 | 2026-11-26 | Version 1 is a complete, usable product (all of `docs/product.md` § Version 1 scope), not an MVP | The owner wants to switch to it for daily use |
-| D-009 | 2026-11-26 | UI in Svelte 5 (runes), set up as in Obsidian's guide "Use Svelte in your plugin" | Shorter screens, reactive state; widely used in Obsidian plugins |
+| D-009 | 2026-11-26 | ~~UI in Svelte 5 (runes), set up as in Obsidian's guide "Use Svelte in your plugin"~~ Superseded by D-018 | Shorter screens, reactive state; widely used in Obsidian plugins |
 | D-008 | 2026-11-26 | A budget is a `budget` property on the category note; the overall budget is a setting | Simple to edit; changing a limit also changes past comparisons, accepted |
 | D-007 | 2026-11-26 | One "recurring item" note type with `mode: auto` (logged on the due date) or `remind` (pay or skip) | Rent, salary and bills share one model and one screen |
 | D-006 | 2026-11-26 | Loans: each person is a note in `people/`; four transaction types `lend`, `collect`, `borrow`, `repay` with `person` | The person note's backlinks show the whole history; no system categories |
@@ -28,6 +30,4 @@ One line per decision, newest first. Claude Code: before work that touches an op
 
 | Id | Question | Notes |
 | --- | --- | --- |
-| Q-01 | Where does Tane's tab bar go so it never sits under Obsidian's floating navigation buttons? | Try on an iPhone in M1 |
-| Q-02 | Can Tane's sheet drag and horizontal chip rows coexist with Obsidian's swipe gestures? | Try on an iPhone in M1 |
 | Q-06 | AI approach (later): user's own API key, on-device models via Shortcuts, or both? | After version 1. Cloud AI off by default |

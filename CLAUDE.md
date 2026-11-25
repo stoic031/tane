@@ -1,6 +1,6 @@
 # Tane: personal finance plugin for Obsidian
 
-Tane is the owner's personal finance app, rebuilt from scratch as an Obsidian plugin. Every transaction is one Markdown note whose data lives in properties; wallets, categories, people and recurring items are notes too. The owner is Vietnamese, lives in Japan, uses an iPhone, and holds money in JPY and VND. The plugin must run on iPhone (`isDesktopOnly: false`). UI is Svelte 5.
+Tane is the owner's personal finance app, rebuilt from scratch as an Obsidian plugin. Every transaction is one Markdown note whose data lives in properties; wallets, categories, people and recurring items are notes too. The owner is Vietnamese, lives in Japan, uses an iPhone, and holds money in JPY and VND. The plugin must run on iPhone (`isDesktopOnly: false`). The UI uses Obsidian's own components (modal, sidebar panel, code blocks, Bases), not a framework (D-018).
 
 Version 1 is a complete product the owner uses every day, not an MVP. Scope and milestones: `docs/product.md`.
 
@@ -17,9 +17,9 @@ Version 1 is a complete product the owner uses every day, not an MVP. Scope and 
 ```bash
 npm install          # first time, or after package.json changes
 npm run dev          # watch build; copies the plugin into $TANE_VAULT if set
-npm run build        # tsc + svelte-check + esbuild production → main.js
+npm run build        # tsc + esbuild production → main.js
 npm test             # vitest
-npm run lint         # eslint with eslint-plugin-obsidianmd and eslint-plugin-svelte
+npm run lint         # eslint with eslint-plugin-obsidianmd
 npm run check        # build + lint + test + scripts/check-forbidden.mjs; must pass before every commit
 ```
 
@@ -28,9 +28,9 @@ npm run check        # build + lint + test + scripts/check-forbidden.mjs; must p
 ```
 src/main.ts          plugin lifecycle: settings, view, commands, protocol handler, startup jobs. Keep it thin
 src/settings.ts      settings type, defaults, settings tab
-src/core/            pure TypeScript: types, parsing, validation, calculations. No obsidian, no svelte, no clock
+src/core/            pure TypeScript: types, parsing, validation, calculations. No obsidian, no DOM, no clock
 src/data/            Obsidian I/O: vault index, writer, background jobs, log
-src/ui/              Svelte 5 components, the view that mounts them, the UI store
+src/ui/              Obsidian surfaces: add modal, pickers, overview panel, code blocks, Bases view, status bar
 test/                vitest; test/mocks/obsidian.ts stands in for the obsidian package
 docs/                the source of truth (table below)
 scripts/             check-forbidden.mjs; fake-vault generator (later)
@@ -45,7 +45,7 @@ Dependencies flow one way: `ui → data → core`. Details: `docs/architecture.m
 1. **Data** follows `docs/data-model.md`. English `snake_case` properties. References are wikilinks only; transactions and recurring items have ids, other notes are identified by name. Read from `app.metadataCache`, never by reading files one by one. Edit frontmatter with `app.fileManager.processFrontMatter`, delete with `app.fileManager.trashFile`.
 2. **Nothing is dropped silently**: a note that fails parsing or a rule goes to needs-review and counts in no totals.
 3. **Calculations** follow `docs/calculations.md`, as pure functions in `src/core/` that take `today` (`YYYY-MM-DD`) as an argument. Money is added as integers in minor units. Every formula has tests with the worked examples.
-4. **UI** follows `docs/ui.md`. Svelte components never write to the vault; they call `src/data`. No `{@html}`, no `innerHTML`, no fixed inline styles. Fixed styles live in the component's `<style>` or in `styles.css` (`.tane-*`), using Obsidian CSS variables. Animate only `transform` and `opacity`.
+4. **UI** follows `docs/ui.md`: Obsidian components only, no framework, no custom animation. Surfaces never write to the vault; they call `src/data`. No `innerHTML`, no fixed inline styles; styles live in `styles.css` (`.tane-*`) using Obsidian CSS variables.
 5. **Obsidian** rules in `docs/obsidian-rules.md`: no Node or Electron modules, no `fetch` (use `requestUrl`), no regex lookbehind, no `console.log`, heavy work after `onLayoutReady`, every listener registered with `register*`.
 6. **Never edit by hand**: `main.js` (build output), `package-lock.json`, `flake.lock`, `.envrc.local`.
 
@@ -82,7 +82,7 @@ Done means: tests added and passing, `npm run check` passes, docs updated when b
 | Layers, folders, data flow, jobs | `docs/architecture.md` |
 | Notes, properties, links, ids, needs-review | `docs/data-model.md`, skill `tane-data-model` |
 | Formulas and numbers | `docs/calculations.md`, skill `tane-calc` |
-| Screens, Svelte components, motion | `docs/ui.md`, skill `tane-ui` |
+| Modal, panel, code blocks, Bases view | `docs/ui.md`, skill `tane-ui` |
 | Review before a large commit or a release | `docs/obsidian-rules.md`, skill `obsidian-review` |
 | Bugs that only happen on the iPhone | skill `iphone-debug` |
 | Releasing | `docs/release.md`, skill `release-brat` (the owner types `/release-brat`) |

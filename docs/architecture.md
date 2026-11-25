@@ -5,12 +5,12 @@ Three layers, each allowed to call only the layers below it:
 ```
 src/main.ts      plugin lifecycle: settings, view, commands, obsidian:// handler, startup jobs
    │
-src/ui/          Svelte 5: screens, sheets, components, UI store, i18n strings
-   │             reads the store; calls src/data for every write
+src/ui/          Obsidian surfaces: modal, pickers, panel, code blocks, Bases view, status bar
+   │             render index snapshots; call src/data for every write
 src/data/        Obsidian I/O: vault index, writer, background jobs, logger
    │             uses Obsidian APIs; parses and validates with src/core
 src/core/        pure TypeScript: types, parse, validate, calculations, formatting
-                 no obsidian, no svelte, no clock, no randomness except ids.ts
+                 no obsidian, no DOM, no clock, no randomness except ids.ts
 ```
 
 `src/ui` may also call pure functions from `src/core` (formatting, calculations on data it already holds). `src/core` never imports from the layers above. `scripts/check-forbidden.mjs` enforces the main rules.
@@ -42,12 +42,13 @@ src/
 │  ├─ jobs/              inbox.ts, catchup.ts, fx.ts, integrity.ts
 │  └─ log.ts             append errors to system/log.md
 └─ ui/
-   ├─ view.ts            TaneView (ItemView): mounts App, owns the UiStore
-   ├─ store.svelte.ts    UiStore: $state snapshot + derived numbers for the screens
-   ├─ App.svelte         tab shell, sheet host
-   ├─ screens/           Home, Transactions, Wallets, Plans, Settings (in-app)
-   ├─ sheets/            EntrySheet, Picker, Confirm, Sheet (drag behaviour)
-   ├─ components/        Amount, Money, ProgressBar, Chip, TxRow, EmptyState…
+   ├─ add-modal.ts       AddTransactionModal (Modal): the logging form
+   ├─ pickers.ts         WalletPicker, CategoryPicker, PersonPicker (SuggestModal)
+   ├─ panel.ts           OverviewView (ItemView, right sidebar)
+   ├─ codeblock.ts       `tane` code block processor (MarkdownRenderChild per block)
+   ├─ widgets/           today, period, budgets, review, upcoming, cashflow, networth, wallet…: render into an element, shared by panel and code blocks
+   ├─ ledger-view.ts     Tane ledger Bases view (registerBasesView)
+   ├─ statusbar.ts       left to spend today (desktop)
    └─ time.ts            todayLocal(): the only place the UI reads the clock
 test/
 ├─ core/                 one test file per core module
@@ -63,8 +64,8 @@ Reading:
 
 1. On layout ready, `VaultIndex.load()` walks the Tane folders and reads each note's frontmatter from `metadataCache.getFileCache(file)?.frontmatter`.
 2. Each note goes through `core/parse.ts`; failures go to the needs-review list, successes into in-memory maps (transactions by id and by period, wallets, categories, people, recurring items).
-3. The index publishes an immutable snapshot. `UiStore` receives it and recomputes derived numbers with `core/calc`.
-4. Svelte components read from the store; runes re-render only what depends on changed fields.
+3. The index publishes an immutable snapshot and fires an event.
+4. Open surfaces (panel, code blocks, status bar) listen through their `Component` and re-render their widgets from the snapshot with `core/calc`.
 
 Keeping in sync:
 
@@ -73,7 +74,7 @@ Keeping in sync:
 
 Writing:
 
-1. A screen or sheet calls a function in `data/writer.ts` with plain values.
+1. The modal (or a panel action) calls a function in `data/writer.ts` with plain values.
 2. The writer builds the full record, runs `core/validate.ts`, and refuses the change with a message if any rule fails.
 3. It writes with `vault.create` (new note) or `fileManager.processFrontMatter` (edit), moves the file if its month changed, or `fileManager.trashFile` (delete).
 4. It does not update the index itself: the vault event in step "Keeping in sync" does, so hand edits and plugin edits follow the same path.
@@ -91,13 +92,11 @@ Run on layout ready, then when relevant events fire. None run while Obsidian is 
 
 Jobs must be idempotent: running twice, or on two devices before sync settles, must not create duplicates (deterministic ids, check before create). Tane runs on the Mac and the iPhone at the same time (D-012), so this is the normal case, not an edge case: occurrence ids come from the recurring id and date, inbox ids from the inbox note's content, and an iCloud conflict copy of a recurring note is caught as a duplicate id.
 
-## Svelte usage
+## UI usage
 
-- Svelte 5 with runes, compiled by `esbuild-svelte` with `css: 'injected'`, following Obsidian's guide "Use Svelte in your plugin".
-- Mount in `ItemView.onOpen` with `mount()`, unmount in `onClose` with `unmount()`.
-- Shared reactive state lives in `.svelte.ts` modules (`store.svelte.ts`) as classes with `$state` fields; components receive the store as a prop.
-- Components never touch `app.vault` or `fileManager`; they call `src/data`.
-- Type-check with `svelte-check` (part of `npm run build`).
+- Obsidian's API only (D-018): `Modal`, `SuggestModal`, `ItemView`, `MarkdownRenderChild`, `BasesView`, `Setting`, `createEl`, `setIcon`. No UI framework.
+- Each surface is a `Component`; listeners registered on it are removed when it unloads.
+- Widgets are plain functions `(el, snapshot, settings, today) => void` so the panel and code blocks share them.
 
 ## Errors and logging
 

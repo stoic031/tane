@@ -18,7 +18,7 @@ Obsidian on iOS has almost no debugging tools. Work through these steps in order
 
 - **Plugin does not load**: syntax older WebKit does not understand (regex lookbehind, very new JS APIs). Check `target` in `esbuild.config.mjs` (es2018), run `npm run check`, check `minAppVersion`.
 - **Desktop-only APIs**: Node, Electron, `require('fs')`, `process`. Lint and `check-forbidden` usually catch these.
-- **Blank screen after opening**: an uncaught error in `onLayoutReady`, `onOpen` or a Svelte component's first render. Wrap boundaries in try/catch and log.
+- **Blank screen after opening**: an uncaught error in `onLayoutReady`, `onOpen`, a modal's `onOpen` or a code block's first render. Wrap boundaries in try/catch and log.
 - **Gestures taken by Obsidian**: horizontal swipes open sidebars, pulling down opens the command palette (`docs/ui.md`).
 - **Slow startup**: iCloud may need to download files; count notes in `transactions/`; measure with Settings → General → the stopwatch icon (startup time).
 - **Data missing**: iCloud has not finished syncing; conflict copies `... 2.md`.
