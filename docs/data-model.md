@@ -40,7 +40,7 @@ The year and month folders follow the transaction `date`; changing the date to a
 ## Relationships
 
 - A transaction belongs to exactly one `wallet`, and optionally has a `category` (expense, income), a `to_wallet` (transfer), a `person` (loan types) and a `recurring` origin.
-- Wallets and categories are many-to-many: each wallet lists the categories it uses in `categories`. The list only filters the category picker for new entries; removing a category from a wallet never touches existing transactions.
+- Wallets and categories are many-to-many: each wallet lists the categories it uses in `categories`; an empty or missing list means the wallet uses every category. The list only filters the category picker and the check on new entries; removing a category from a wallet never touches existing transactions.
 - A category may have a `parent` (two levels at most, same `kind`).
 - A credit wallet names the wallet that pays it (`pay_from`).
 - A recurring item references a wallet and optionally a category, `to_wallet` or `person`.

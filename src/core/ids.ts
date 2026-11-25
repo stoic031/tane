@@ -43,3 +43,27 @@ export function isId(value: unknown, prefix?: IdPrefix): value is string {
 	const re = new RegExp(`^${prefix ?? '[A-Z]{1,2}'}-[A-Za-z0-9-]+$`);
 	return re.test(value);
 }
+
+/** 32-bit FNV-1a hash, enough to tell inbox captures apart. */
+function fnv1a(text: string, seed = 0x811c9dc5): number {
+	let h = seed;
+	for (let i = 0; i < text.length; i++) {
+		h ^= text.charCodeAt(i);
+		h = Math.imul(h, 0x01000193) >>> 0;
+	}
+	return h;
+}
+
+/**
+ * Deterministic id for a transaction made from an inbox note (docs/data-model.md § Inbox note),
+ * so the Mac and the iPhone processing the same note produce the same id and path (D-012).
+ */
+export function inboxTransactionId(item: { amount: number; card?: string; merchant?: string; capturedAt?: string }): string {
+	const key = [item.capturedAt ?? '', item.amount, item.card ?? '', item.merchant ?? ''].join('|');
+	// Two hashes with different seeds give 64 bits; 10 base-36 characters keep ~51 of them.
+	const bytes = new Uint8Array(10);
+	const a = fnv1a(key);
+	const b = fnv1a(key, 0x01000193);
+	for (let i = 0; i < 10; i++) bytes[i] = ((i < 5 ? a : b) >>> ((i % 5) * 6)) & 0xff;
+	return newId('TX', 10, (out) => out.set(bytes));
+}

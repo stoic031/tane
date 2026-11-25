@@ -43,7 +43,7 @@ for (const file of walk('src')) {
 	if (file.startsWith(path.join('src', 'ui'))) rules.push(...UI);
 	const lines = readFileSync(file, 'utf8').split('\n');
 	lines.forEach((line, i) => {
-		if (/^\s*(\/\/|\*|<!--)/.test(line)) return; // skip comment lines
+		if (/^\s*(\/\/|\/\*|\*|<!--)/.test(line)) return; // skip comment lines
 		for (const r of rules) {
 			if (r.re.test(line)) {
 				console.error(`${file}:${i + 1}: ${r.why}\n    ${line.trim()}`);

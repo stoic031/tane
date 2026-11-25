@@ -1,30 +1,8 @@
 import { type App, PluginSettingTab, Setting } from 'obsidian';
 import type TanePlugin from './main';
 
-/** Stored in the plugin's data.json. Full list: docs/data-model.md § Settings. */
-export interface TaneSettings {
-	/** Root folder of all Tane notes inside the vault. */
-	rootFolder: string;
-	/** Pay-cycle start day, 1..28. */
-	periodStartDay: number;
-	/** Reporting currency. */
-	baseCurrency: string;
-	/** Shown next to net worth. */
-	secondCurrency: string;
-	/** Budget warning threshold, percent. */
-	budgetWarnPct: number;
-	/** Bumped when the note format changes; drives one-time migrations. */
-	schemaVersion: number;
-}
-
-export const DEFAULT_SETTINGS: TaneSettings = {
-	rootFolder: 'Tane',
-	periodStartDay: 1,
-	baseCurrency: 'JPY',
-	secondCurrency: 'VND',
-	budgetWarnPct: 80,
-	schemaVersion: 1,
-};
+export { DEFAULT_SETTINGS, type TaneSettings } from './core/settings';
+import { DEFAULT_SETTINGS } from './core/settings';
 
 export class TaneSettingTab extends PluginSettingTab {
 	plugin: TanePlugin;
