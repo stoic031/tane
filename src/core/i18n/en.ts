@@ -1,15 +1,30 @@
-// English UI strings, the source language (docs/ui.md § Rules). vi and ja follow in M6.
-import type { DraftType } from '../draft';
+// English UI strings, the source language (docs/ui.md § Rules). vi.ts and ja.ts must have the same shape.
+import type { TxType } from '../types';
 
 export const en = {
 	tane: 'Tane',
 	openOverview: 'Open Tane overview',
 	addTransaction: 'Add transaction',
-	types: { expense: 'Expense', income: 'Income', transfer: 'Transfer' } satisfies Record<DraftType, string>,
+	editTransaction: 'Edit transaction',
+	types: {
+		expense: 'Expense',
+		income: 'Income',
+		transfer: 'Transfer',
+		adjust: 'Adjust balance',
+		lend: 'Lend',
+		collect: 'Collect',
+		borrow: 'Borrow',
+		repay: 'Repay',
+	} satisfies Record<TxType, string>,
+	moreTypes: 'More…',
 	amount: 'Amount',
 	wallet: 'Wallet',
 	toWallet: 'To wallet',
+	toAmount: 'Amount received',
+	fee: 'Fee',
 	category: 'Category',
+	person: 'Person',
+	dueDate: 'Due date',
 	date: 'Date',
 	merchant: 'Merchant',
 	note: 'Note',
@@ -17,10 +32,15 @@ export const en = {
 	save: 'Save',
 	pickWallet: 'Choose a wallet',
 	pickCategory: 'Choose a category',
-	noNotes: (folder: string) => `Nothing here yet: add notes in ${folder}`,
-	notSavedYet: (summary: string) => `Not saved yet (M1): ${summary}`,
+	pickPerson: 'Choose a person',
+	noWallets: 'No wallets yet: add a note in the wallets folder',
+	noCategories: 'No categories for this wallet: add one in the categories folder or to the wallet',
+	noPeople: 'No people yet: add a note in the people folder',
+	saved: (amount: string, what: string) => `Saved ${amount} · ${what}`,
 	period: (key: string) => `Period ${key}`,
 	daysLeft: (left: number, days: number) => `${left} of ${days} days left`,
 	statusBar: (left: number) => `Tane · ${left} days left`,
 	unknownWidget: (name: string) => `Unknown Tane widget: ${name}`,
 };
+
+export type Strings = typeof en;

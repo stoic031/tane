@@ -45,3 +45,12 @@
 	font-variant-numeric: tabular-nums;
 	text-align: right;
 }
+
+.tane-error {
+	color: var(--text-error);
+	font-size: var(--font-ui-small);
+}
+
+.tane-error:empty {
+	display: none;
+}

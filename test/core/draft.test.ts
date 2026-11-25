@@ -9,6 +9,11 @@ describe('parseAmount', () => {
 		expect(parseAmount(' 17,500,000 ')).toBe(17_500_000);
 	});
 
+	it('negative only when allowed (refunds, adjustments)', () => {
+		expect(parseAmount('-8,900', true)).toBe(-8900);
+		expect(parseAmount('-8900')).toBeUndefined();
+	});
+
 	it('decimals', () => {
 		expect(parseAmount('12.5')).toBe(12.5);
 	});
@@ -44,8 +49,9 @@ describe('draftFromParams', () => {
 	});
 
 	it('keeps a valid type and date', () => {
-		const d = draftFromParams({ action: 'tane', type: 'income', date: '2026-11-25' }, today);
-		expect(d.type).toBe('income');
+		const d = draftFromParams({ action: 'tane', type: 'lend', date: '2026-11-25', person: 'Minh' }, today);
+		expect(d.type).toBe('lend');
+		expect(d.person).toBe('Minh');
 		expect(d.date).toBe('2026-11-25');
 	});
 
@@ -61,6 +67,11 @@ describe('missingFields', () => {
 	it('expense needs amount, wallet and category', () => {
 		expect(missingFields({ ...base, type: 'expense' })).toEqual(['amount', 'wallet', 'category']);
 		expect(missingFields({ ...base, type: 'expense', amount: 1280, wallet: 'PayPay', category: 'Eating out' })).toEqual([]);
+	});
+
+	it('loan types need a person, adjust needs only amount and wallet', () => {
+		expect(missingFields({ ...base, type: 'lend', amount: 20000, wallet: 'Yucho' })).toEqual(['person']);
+		expect(missingFields({ ...base, type: 'adjust', amount: -500, wallet: 'Yucho' })).toEqual([]);
 	});
 
 	it('transfer needs a receiving wallet instead of a category', () => {

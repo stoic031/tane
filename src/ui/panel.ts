@@ -1,5 +1,5 @@
 import { ItemView, type WorkspaceLeaf } from 'obsidian';
-import { en } from '../core/i18n/en';
+import { t } from './i18n';
 import type TanePlugin from '../main';
 import { todayLocal } from './time';
 import { renderPeriod } from './widgets/period';
@@ -20,7 +20,7 @@ export class OverviewView extends ItemView {
 	}
 
 	getDisplayText(): string {
-		return en.tane;
+		return t.tane;
 	}
 
 	getIcon(): string {

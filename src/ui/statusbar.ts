@@ -1,4 +1,4 @@
-import { en } from '../core/i18n/en';
+import { t } from './i18n';
 import { daysLeftIncludingToday, periodOf } from '../core/period';
 import type TanePlugin from '../main';
 import { todayLocal } from './time';
@@ -10,7 +10,7 @@ export function addStatusBar(plugin: TanePlugin): () => void {
 	plugin.registerDomEvent(item, 'click', () => void plugin.activateView());
 	const update = () => {
 		const today = todayLocal();
-		item.setText(en.statusBar(daysLeftIncludingToday(periodOf(today, plugin.settings.periodStartDay), today)));
+		item.setText(t.statusBar(daysLeftIncludingToday(periodOf(today, plugin.settings.periodStartDay), today)));
 	};
 	update();
 	return update;

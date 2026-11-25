@@ -1,5 +1,5 @@
 import { MarkdownRenderChild, type MarkdownPostProcessorContext } from 'obsidian';
-import { en } from '../core/i18n/en';
+import { t } from './i18n';
 import type TanePlugin from '../main';
 import { todayLocal } from './time';
 import { renderPeriod } from './widgets/period';
@@ -13,7 +13,7 @@ export function registerCodeBlocks(plugin: TanePlugin): void {
 		if (name === 'today' || name === 'period') {
 			renderPeriod(el, todayLocal(), plugin.settings.periodStartDay);
 		} else {
-			el.createDiv({ cls: 'tane-muted', text: en.unknownWidget(name) });
+			el.createDiv({ cls: 'tane-muted', text: t.unknownWidget(name) });
 		}
 	});
 }

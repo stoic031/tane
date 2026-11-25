@@ -1,29 +1,29 @@
 import { type App, FuzzySuggestModal } from 'obsidian';
-import { en } from '../core/i18n/en';
+import type { Choice } from '../core/choices';
 
-/** Pick a wallet, category or person by note name, filtered as you type (like the quick switcher). */
-export class NamePicker extends FuzzySuggestModal<string> {
+/** Pick a wallet, category or person, filtered as you type (like the quick switcher). */
+export class ChoicePicker extends FuzzySuggestModal<Choice> {
 	constructor(
 		app: App,
-		private readonly names: string[],
+		private readonly choices: Choice[],
 		placeholder: string,
-		folder: string,
+		empty: string,
 		private readonly onPick: (name: string) => void,
 	) {
 		super(app);
 		this.setPlaceholder(placeholder);
-		this.emptyStateText = en.noNotes(folder);
+		this.emptyStateText = empty;
 	}
 
-	getItems(): string[] {
-		return this.names;
+	getItems(): Choice[] {
+		return this.choices;
 	}
 
-	getItemText(name: string): string {
-		return name;
+	getItemText(c: Choice): string {
+		return c.label;
 	}
 
-	onChooseItem(name: string): void {
-		this.onPick(name);
+	onChooseItem(c: Choice): void {
+		this.onPick(c.name);
 	}
 }
