@@ -28,4 +28,4 @@ All data stays in your vault as Markdown files. Tane collects no telemetry. Netw
 
 ## License
 
-Not decided yet (see `docs/decisions.md`, Q-05).
+MIT, see `LICENSE`.

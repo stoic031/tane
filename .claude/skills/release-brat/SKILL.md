@@ -29,5 +29,5 @@ Version: $ARGUMENTS (if empty, ask the owner: `patch`, `minor`, `major`, or an e
 
 1. Open Obsidian → Settings → BRAT.
 2. First time: "Add beta plugin", paste `<owner>/<repo>`, enable Tane in Community plugins. Later: "Check for updates".
-3. Private repository: BRAT needs a fine-grained token for this repository only, with Contents: read-only.
+3. The repository is public (D-017), so BRAT needs no token.
 4. Force-quit Obsidian, reopen, check the version in Community plugins.

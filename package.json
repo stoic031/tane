@@ -20,7 +20,7 @@
 		"finance",
 		"budget"
 	],
-	"license": "UNLICENSED",
+	"license": "MIT",
 	"devDependencies": {
 		"@eslint/js": "^9.39.4",
 		"@types/node": "^22.15.17",

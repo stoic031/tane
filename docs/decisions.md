@@ -6,6 +6,7 @@ One line per decision, newest first. Claude Code: before work that touches an op
 
 | Id | Date | Decision | Why |
 | --- | --- | --- | --- |
+| D-017 | 2026-11-26 | Public repository `stoic031/tane`, MIT license (closes Q-05) | BRAT installs without a token; MIT is common for Obsidian plugins and fine for directory submission |
 | D-016 | 2026-11-26 | Loans settle in the loan's currency: a `collect` or `repay` in another currency is converted at the rate of its date; with several open loans, the oldest is reduced first | A loan given in JPY and paid back in VND must reach 0 |
 | D-015 | 2026-11-26 | "Left to spend today" is fixed at the start of the day and drops only by what is spent today | A number that re-divides after each purchase is confusing |
 | D-014 | 2026-11-26 | Transaction file names stay `YYYY-MM-DD TX-….md`, no merchant (closes Q-07) | Editing a merchant never renames a file; fewer iCloud conflict copies |
@@ -29,5 +30,4 @@ One line per decision, newest first. Claude Code: before work that touches an op
 | --- | --- | --- |
 | Q-01 | Where does Tane's tab bar go so it never sits under Obsidian's floating navigation buttons? | Try on an iPhone in M1 |
 | Q-02 | Can Tane's sheet drag and horizontal chip rows coexist with Obsidian's swipe gestures? | Try on an iPhone in M1 |
-| Q-05 | Public or private repository; which license? | The code holds no financial data. Private needs a BRAT token. License needed before directory submission |
 | Q-06 | AI approach (later): user's own API key, on-device models via Shortcuts, or both? | After version 1. Cloud AI off by default |

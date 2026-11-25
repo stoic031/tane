@@ -27,7 +27,7 @@ Done by the `release-brat` skill, which runs only when the owner types `/release
 4. Verify: `gh run list --workflow=release.yml --limit 1`, then `gh release view <tag>`.
 5. iPhone: Obsidian → BRAT → "Add beta plugin" with `<owner>/<repo>` the first time, "Check for updates" afterwards.
 
-Private repository: BRAT needs a fine-grained personal access token for this repository only, with Contents: read-only.
+The repository is public (D-017), so BRAT needs no token.
 
 ## Test data
 
