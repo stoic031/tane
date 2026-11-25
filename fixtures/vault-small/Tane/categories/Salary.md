@@ -1,0 +1,4 @@
+---
+kind: income
+icon: 💴
+---

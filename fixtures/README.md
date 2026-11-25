@@ -1,8 +1,6 @@
 # fixtures/
 
-FAKE data for tests and for the "Tane Dev" test vault. Never put real data here.
+FAKE data for tests and for test vaults. Never put real data here.
 
-Planned (milestone M2):
-
-- `vault-small/`: a few wallets, categories, people, recurring items and transactions that follow `docs/data-model.md`, covering every transaction type and the worked examples in `docs/calculations.md`.
-- A generator in `scripts/` builds a large fake vault (about 4,000 transactions, one year) with a fixed seed, for performance checks on iPhone. Its output is not committed.
+- `vault-small/Tane/`: wallets of every kind, categories with parents and budgets, people, recurring items (auto and remind), an inbox capture, a rate file, and transactions covering every type and the worked examples in `docs/calculations.md`. `test/data/fixtures.test.ts` loads it and expects no problems. To try it in Obsidian, copy `vault-small/Tane` into a test vault (for example `plugin-test`).
+- `scripts/gen-vault.mjs` builds a large fake vault (default about 4,000 transactions over one year) with a fixed seed, for performance checks on iPhone. Its output is not committed.

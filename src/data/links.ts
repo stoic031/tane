@@ -29,16 +29,19 @@ export function linkText(value: unknown): string | undefined {
  */
 export function resolveLinks(app: App, paths: TanePaths, fm: Record<string, unknown>, sourcePath: string): Record<string, unknown> {
 	const out: Record<string, unknown> = { ...fm };
-	const resolve = (v: unknown): unknown => {
+	const resolve = (v: unknown, expected: FolderKind): unknown => {
 		const text = linkText(v);
 		if (text === undefined) return v;
-		const dest = app.metadataCache.getFirstLinkpathDest(text, sourcePath);
+		// A bare name like [[Salary]] may match a category and a recurring item; prefer the folder the field points into.
+		const dest =
+			(!text.includes('/') && app.metadataCache.getFirstLinkpathDest(`${paths[expected]}/${text}`, sourcePath)) ||
+			app.metadataCache.getFirstLinkpathDest(text, sourcePath);
 		return dest ? { name: dest.basename, folder: folderOf(paths, dest.path) } : { broken: text };
 	};
-	for (const key of Object.keys(LINK_FIELDS)) {
+	for (const [key, expected] of Object.entries(LINK_FIELDS)) {
 		const v = out[key];
 		if (v === undefined || v === null) continue;
-		out[key] = Array.isArray(v) ? v.map(resolve) : resolve(v);
+		out[key] = Array.isArray(v) ? v.map((x) => resolve(x, expected)) : resolve(v, expected);
 	}
 	return out;
 }

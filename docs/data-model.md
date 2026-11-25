@@ -8,7 +8,7 @@ Every record is a Markdown note; its data lives in properties (YAML frontmatter)
 - **Identity**: wallets, categories, people and recurring items are identified by their note name (file basename). Transactions carry an `id` because they need one for de-duplication and for recurring occurrences. Recurring items carry an `id` only to build occurrence ids.
 - **Ids**: `PREFIX-xxxxxxxxxx`, 10 characters a–z 0–9, never changed or reused. `TX` transaction, `RC` recurring item, `G` group. See `src/core/ids.ts`.
 - **References are links only**: `wallet: "[[PayPay]]"`. No parallel id fields.
-  - Reading: resolve with `metadataCache.getFirstLinkpathDest(linktext, sourcePath)`. The target must sit in the expected Tane folder (a wallet link must land in `wallets/`); otherwise the note goes to needs-review.
+  - Reading: resolve with `metadataCache.getFirstLinkpathDest(linktext, sourcePath)`, trying the field's own folder first so a bare `[[Salary]]` in `category` finds `categories/Salary` even when a recurring item has the same name. The target must sit in the expected Tane folder (a wallet link must land in `wallets/`); otherwise the note goes to needs-review.
   - Writing: build the link text with `metadataCache.fileToLinktext(file, sourcePath, true)` so it is the shortest unambiguous path, and always write wikilink form `"[[...]]"` (properties only recognise wikilinks).
   - Renames: Obsidian updates links when "Automatically update internal links" is on; the plugin also listens to `vault.on('rename')` for files in its folders and fixes links in Tane notes itself.
 - **Dates** `YYYY-MM-DD` (property type Date). **Date-times** `YYYY-MM-DDTHH:mm:ss` (Date & time), local time.
